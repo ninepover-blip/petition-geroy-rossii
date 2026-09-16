@@ -6,6 +6,27 @@ import { ArrowRight, Landmark, Share2, Star } from "lucide-react";
 import { AnimatedNumber, useLive } from "@/components/live";
 import { PETITION, decl, formatNumber } from "@/lib/petition";
 
+function CircularStamp() {
+  return (
+    <div className="absolute -bottom-8 -right-8 z-10 hidden size-36 md:block lg:size-40">
+      <div className="absolute inset-0 rounded-full border-2 border-gold/70 bg-hero-dark/90 shadow-2xl backdrop-blur" />
+      <svg viewBox="0 0 120 120" className="animate-spin-slow absolute inset-0 size-full">
+        <defs>
+          <path id="stampCircle" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0" />
+        </defs>
+        <text className="fill-gold text-[10.5px] font-semibold tracking-[0.22em]">
+          <textPath href="#stampCircle">
+            ГЕРОЙ РОССИИ • НАРОДНАЯ ПЕТИЦИЯ • ЗОЛОТАЯ ЗВЕЗДА •
+          </textPath>
+        </text>
+      </svg>
+      <div className="absolute inset-0 grid place-items-center">
+        <Star className="size-10 fill-gold text-gold" strokeWidth={1} />
+      </div>
+    </div>
+  );
+}
+
 function Sparkline({ data }: { data: number[] }) {
   const max = Math.max(1, ...data);
   return (
@@ -147,6 +168,7 @@ export default function Hero() {
                   </span>
                 </div>
               </div>
+              <CircularStamp />
             </div>
           </motion.div>
         </div>
