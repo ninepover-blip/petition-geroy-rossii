@@ -40,19 +40,21 @@ export default function ChangeOrgPage() {
       </header>
 
       {/* Hero with photo + title overlay */}
-      <section className="relative h-[400px] sm:h-[480px] lg:h-[520px]">
-        <img
-          src="/images/hero.jpg"
-          alt="Николай Кривоусов"
-          className="h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-        <div className="absolute right-0 bottom-0 left-0 px-4 pb-8 sm:px-8 lg:px-16">
-          <div className="mx-auto max-w-[1200px]">
-            <div className="h-3 w-[71px] bg-[#E5231E]" />
-            <h1 className="mt-4 max-w-2xl text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-4xl">
-              Присвоить звание «Герой России» Кривоусову Николаю Александровичу
-            </h1>
+      <section className="relative">
+        <div className="relative w-full" style={{ aspectRatio: "16/9" }}>
+          <img
+            src="/images/hero.jpg"
+            alt="Николай Кривоусов"
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="absolute right-0 bottom-0 left-0 px-4 pb-8 sm:px-8 lg:px-16">
+            <div className="mx-auto max-w-[1200px]">
+              <div className="h-3 w-[71px] bg-[#E5231E]" />
+              <h1 className="mt-4 max-w-2xl text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-4xl">
+                Присвоить звание «Герой России» Кривоусову Николаю Александровичу
+              </h1>
+            </div>
           </div>
         </div>
       </section>
