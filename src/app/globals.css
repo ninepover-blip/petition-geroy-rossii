@@ -9,6 +9,8 @@
   --color-crimson-deep: #8c1620;
   --color-gold: #a97b26;
   --color-line: rgba(23, 19, 14, 0.14);
+  --color-hero-dark: #201d1a;
+  --color-hero-red: #E5231E;
   --font-display: "Playfair Display", "Georgia", serif;
   --font-sans: "Golos Text", "Inter", system-ui, sans-serif;
 }
