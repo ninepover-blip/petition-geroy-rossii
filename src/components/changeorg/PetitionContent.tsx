@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Flag } from "lucide-react";
 
@@ -37,14 +36,8 @@ export default function PetitionContent() {
 
       {/* Author block */}
       <div className="flex items-center gap-4">
-        <div className="relative size-12 shrink-0 overflow-hidden rounded-full border-2 border-gray-200 bg-gray-200">
-          <Image
-            src="/images/hero.jpg"
-            alt="Валентина Лузянина"
-            fill
-            className="object-cover"
-            sizes="48px"
-          />
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-600">
+          ВЛ
         </div>
         <div>
           <p className="text-sm font-semibold text-gray-900">Валентина Лузянина</p>
