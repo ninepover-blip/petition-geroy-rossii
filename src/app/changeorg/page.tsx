@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Flag, Menu, X } from "lucide-react";
@@ -11,6 +11,16 @@ export default function ChangeOrgPage() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowPopup(true), 5000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const scrollToSign = () => {
+    document.getElementById("sign")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -22,8 +32,8 @@ export default function ChangeOrgPage() {
             <span className="hidden text-base font-semibold tracking-tight text-gray-900 sm:block">change.org</span>
           </Link>
           <div className="hidden items-center gap-2.5 md:flex">
+            <button onClick={scrollToSign} className="rounded-lg bg-[#E5231E] px-3.5 py-2 text-sm font-medium text-white hover:bg-[#c91c17]">Подписать</button>
             <Link href="#" className="rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-50">Start a petition</Link>
-            <Link href="#" className="rounded-lg bg-[#E5231E] px-3.5 py-2 text-sm font-medium text-white hover:bg-[#c91c17]">Log in</Link>
           </div>
           <button onClick={() => setMenuOpen(!menuOpen)} className="flex size-10 items-center justify-center rounded-lg hover:bg-gray-100 md:hidden" aria-label="Toggle menu">
             {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
@@ -32,8 +42,8 @@ export default function ChangeOrgPage() {
         {menuOpen && (
           <div className="border-t border-gray-200 bg-white px-4 py-4 md:hidden">
             <div className="flex flex-col gap-2">
+              <button onClick={() => { scrollToSign(); setMenuOpen(false); }} className="rounded-lg bg-[#E5231E] px-3.5 py-2.5 text-center text-sm font-medium text-white hover:bg-[#c91c17]">Подписать</button>
               <Link href="#" className="rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">Start a petition</Link>
-              <Link href="#" className="rounded-lg bg-[#E5231E] px-3.5 py-2.5 text-center text-sm font-medium text-white hover:bg-[#c91c17]">Log in</Link>
             </div>
           </div>
         )}
@@ -47,13 +57,16 @@ export default function ChangeOrgPage() {
             alt="Николай Кривоусов"
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-white/20" />
           <div className="absolute right-0 bottom-0 left-0 px-4 pb-8 sm:px-8 lg:px-16">
             <div className="mx-auto max-w-[1200px]">
               <div className="h-3 w-[71px] bg-[#E5231E]" />
               <h1 className="mt-4 max-w-2xl text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-4xl">
                 Присвоить звание «Герой России» Кривоусову Николаю Александровичу
               </h1>
+              <button onClick={scrollToSign} className="mt-5 rounded-lg bg-[#f8e74a] px-6 py-3 text-base font-bold text-gray-900 transition-colors hover:bg-[#e6d640]">
+                Подписать петицию
+              </button>
             </div>
           </div>
         </div>
@@ -99,7 +112,7 @@ export default function ChangeOrgPage() {
           </article>
 
           {/* Right: Sidebar with sign form */}
-          <div className="lg:sticky lg:top-20 lg:self-start">
+          <div id="sign" className="lg:sticky lg:top-20 lg:self-start">
             <div className="rounded-2xl bg-white p-6 shadow-[0_2px_20px_rgba(0,0,0,0.08)] border border-gray-100">
               {/* Signature count */}
               <p className="text-center text-4xl font-bold text-gray-900">1,573</p>
@@ -198,6 +211,78 @@ export default function ChangeOrgPage() {
           </div>
         </div>
       </footer>
+
+      {/* Popup Modal — appears after 5 seconds */}
+      {showPopup && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4" onClick={() => setShowPopup(false)}>
+          <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setShowPopup(false)} className="absolute top-4 right-4 flex size-8 items-center justify-center rounded-full hover:bg-gray-100" aria-label="Close">
+              <X className="size-5 text-gray-500" />
+            </button>
+
+            <p className="text-center text-4xl font-bold text-gray-900">1,573</p>
+            <div className="mt-1 flex items-center justify-center gap-1.5">
+              <svg viewBox="0 0 24 24" fill="#1a73e8" className="size-4"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+              <span className="text-sm text-gray-600">Verified signatures</span>
+            </div>
+
+            <hr className="my-5 border-gray-200" />
+
+            <h3 className="text-lg font-bold text-gray-900">Sign this petition</h3>
+
+            <div className="mt-4 space-y-3">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-700">First name</label>
+                <input
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#E5231E] focus:ring-1 focus:ring-[#E5231E]/20"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-700">Last name</label>
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#E5231E] focus:ring-1 focus:ring-[#E5231E]/20"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-700">Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#E5231E] focus:ring-1 focus:ring-[#E5231E]/20"
+                />
+              </div>
+            </div>
+
+            <label className="mt-4 flex cursor-pointer items-start gap-2.5 text-sm text-gray-600 select-none">
+              <input
+                type="checkbox"
+                checked={displayName}
+                onChange={(e) => setDisplayName(e.target.checked)}
+                className="mt-0.5 size-4 rounded border-gray-300 accent-[#E5231E]"
+              />
+              Display my name on this petition
+            </label>
+
+            <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-[#f8e74a] px-6 py-3.5 text-base font-bold text-gray-900 transition-colors hover:bg-[#e6d640]">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-5"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+              Sign petition
+            </button>
+
+            <p className="mt-4 text-center text-[11px] leading-relaxed text-gray-400">
+              By signing, you accept Change.org&apos;s{" "}
+              <Link href="#" className="underline hover:text-gray-600">Terms of Service</Link> and{" "}
+              <Link href="#" className="underline hover:text-gray-600">Privacy Policy</Link>.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
