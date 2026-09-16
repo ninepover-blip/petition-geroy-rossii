@@ -37,9 +37,9 @@ export default function PetitionContent() {
 
       {/* Author block */}
       <div className="flex items-center gap-4">
-        <div className="relative size-12 shrink-0 overflow-hidden rounded-full bg-gray-200">
+        <div className="relative size-12 shrink-0 overflow-hidden rounded-full border-2 border-gray-200 bg-gray-200">
           <Image
-            src="/images/avatar.jpg"
+            src="/images/hero.jpg"
             alt="Валентина Лузянина"
             fill
             className="object-cover"

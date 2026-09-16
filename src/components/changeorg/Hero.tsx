@@ -7,20 +7,17 @@ export default function ChangeHero() {
     <section className="relative bg-[#201d1a]">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <div className="grid gap-8 py-10 md:grid-cols-2 md:gap-12 md:py-16 lg:gap-16">
-          {/* Photo card */}
+          {/* Photo card with star */}
           <div className="relative">
             <div className="relative aspect-[4/5] overflow-hidden rounded-lg sm:aspect-[3/4]">
-              <Image
+              <img
                 src="/images/hero.jpg"
                 alt="Николай Кривоусов — Герой России"
-                fill
-                priority
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
+                className="h-full w-full object-cover"
               />
-              {/* Gradient overlay: transparent to dark from bottom */}
+              {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#201d1a] via-[#201d1a]/30 to-transparent" />
-              {/* Name overlay on photo */}
+              {/* Name overlay */}
               <div className="absolute right-0 bottom-0 left-0 p-5">
                 <p className="text-xs font-medium tracking-wide text-white/60">
                   Вечная память
@@ -31,6 +28,12 @@ export default function ChangeHero() {
                   Кривоусов
                 </p>
               </div>
+            </div>
+            {/* Gold star decoration */}
+            <div className="absolute -top-3 -right-3 z-10 size-12 rounded-full bg-[#a97b26] shadow-lg flex items-center justify-center md:-top-4 md:-right-4 md:size-14">
+              <svg viewBox="0 0 24 24" fill="white" className="size-7 md:size-8">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
             </div>
           </div>
 

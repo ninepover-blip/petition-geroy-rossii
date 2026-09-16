@@ -22,4 +22,9 @@ declare module "lucide-react" {
   export const Link2: ComponentType<SVGProps<SVGSVGElement>>;
   export const Mail: ComponentType<SVGProps<SVGSVGElement>>;
   export const Medal: ComponentType<SVGProps<SVGSVGElement>>;
+  export const Menu: ComponentType<SVGProps<SVGSVGElement>>;
+  export const X: ComponentType<SVGProps<SVGSVGElement>>;
+  export const CheckCircle: ComponentType<SVGProps<SVGSVGElement>>;
+  export const Flag: ComponentType<SVGProps<SVGSVGElement>>;
+  export const ChevronDown: ComponentType<SVGProps<SVGSVGElement>>;
 }
