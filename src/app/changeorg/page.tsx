@@ -8,9 +8,13 @@ export default function ChangeOrgPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => setShowPopup(true), 5000);
@@ -19,6 +23,37 @@ export default function ChangeOrgPage() {
 
   const scrollToSign = () => {
     document.getElementById("sign")?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleSubmit = async () => {
+    setError("");
+    if (!firstName.trim() || !lastName.trim()) {
+      setError("Укажите имя и фамилию");
+      return;
+    }
+    if (!email.trim()) {
+      setError("Укажите email");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/sign", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `${firstName} ${lastName}`,
+          phone,
+          email,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Ошибка");
+      setSubmitted(true);
+    } catch (e: any) {
+      setError(e.message || "Ошибка отправки");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -48,17 +83,17 @@ export default function ChangeOrgPage() {
         )}
       </header>
 
-      {/* Hero: photo + sign form side by side on desktop, stacked on mobile */}
+      {/* Hero: photo + sign form side by side */}
       <section className="mx-auto max-w-[1200px] px-4 pt-6 sm:px-6">
         <div className="flex flex-col gap-6 lg:flex-row lg:gap-8">
           {/* Left: Photo + title */}
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <div className="overflow-hidden rounded-xl">
               <img
                 src="/images/hero.jpg"
                 alt="Николай Кривоусов"
-                className="h-auto w-full object-cover"
-                style={{ maxHeight: "360px" }}
+                className="w-full object-contain"
+                style={{ maxHeight: "420px" }}
               />
             </div>
             <div className="mt-5">
@@ -72,56 +107,82 @@ export default function ChangeOrgPage() {
             </div>
           </div>
 
-          {/* Right: Persistent sign form (popup) — always visible after 5s */}
-          {showPopup && (
-            <div className="w-full shrink-0 lg:w-[340px]">
+          {/* Right: Sign form popup (appears after 5s, non-closable) */}
+          <div className="w-full shrink-0 lg:w-[340px]" id="sign">
+            {showPopup ? (
               <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-[0_2px_20px_rgba(0,0,0,0.08)]">
-                <p className="text-center text-4xl font-bold text-gray-900">1,573</p>
-                <div className="mt-1 flex items-center justify-center gap-1.5">
-                  <svg viewBox="0 0 24 24" fill="#1a73e8" className="size-4"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                  <span className="text-sm text-gray-600">Verified signatures</span>
-                </div>
-                <hr className="my-5 border-gray-200" />
-                <h3 className="text-lg font-bold text-gray-900">Sign this petition</h3>
-                <div className="mt-4 space-y-3">
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-gray-700">First name</label>
-                    <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#E5231E] focus:ring-1 focus:ring-[#E5231E]/20" />
+                {submitted ? (
+                  <div className="py-8 text-center">
+                    <svg viewBox="0 0 24 24" fill="#16a34a" className="mx-auto size-12"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    <p className="mt-4 text-lg font-bold text-gray-900">Спасибо за подпись!</p>
+                    <p className="mt-1 text-sm text-gray-500">Ваш голос важен.</p>
                   </div>
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-gray-700">Last name</label>
-                    <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#E5231E] focus:ring-1 focus:ring-[#E5231E]/20" />
-                  </div>
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-gray-700">Email</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#E5231E] focus:ring-1 focus:ring-[#E5231E]/20" />
-                  </div>
-                </div>
-                <label className="mt-4 flex cursor-pointer items-start gap-2.5 text-sm text-gray-600 select-none">
-                  <input type="checkbox" checked={displayName} onChange={(e) => setDisplayName(e.target.checked)} className="mt-0.5 size-4 rounded border-gray-300 accent-[#E5231E]" />
-                  Display my name on this petition
-                </label>
-                <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-[#f8e74a] px-6 py-3.5 text-base font-bold text-gray-900 transition-colors hover:bg-[#e6d640]">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-5"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
-                  Sign petition
-                </button>
-                <p className="mt-4 text-center text-[11px] leading-relaxed text-gray-400">
-                  By signing, you accept Change.org&apos;s{" "}
-                  <Link href="https://www.change.org/policies/terms-of-service" className="underline hover:text-gray-600">Terms of Service</Link> and{" "}
-                  <Link href="https://www.change.org/policies/privacy" className="underline hover:text-gray-600">Privacy Policy</Link>.
-                </p>
+                ) : (
+                  <>
+                    <p className="text-center text-4xl font-bold text-gray-900">1,573</p>
+                    <div className="mt-1 flex items-center justify-center gap-1.5">
+                      <svg viewBox="0 0 24 24" fill="#1a73e8" className="size-4"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                      <span className="text-sm text-gray-600">Verified signatures</span>
+                    </div>
+                    <hr className="my-5 border-gray-200" />
+                    <h3 className="text-lg font-bold text-gray-900">Sign this petition</h3>
+                    <div className="mt-4 space-y-3">
+                      <div>
+                        <label className="mb-1 block text-xs font-medium text-gray-700">First name</label>
+                        <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#E5231E] focus:ring-1 focus:ring-[#E5231E]/20" />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-xs font-medium text-gray-700">Last name</label>
+                        <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#E5231E] focus:ring-1 focus:ring-[#E5231E]/20" />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-xs font-medium text-gray-700">Phone</label>
+                        <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+7 (___) ___-__-__" className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#E5231E] focus:ring-1 focus:ring-[#E5231E]/20" />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-xs font-medium text-gray-700">Email</label>
+                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#E5231E] focus:ring-1 focus:ring-[#E5231E]/20" />
+                      </div>
+                    </div>
+                    <label className="mt-4 flex cursor-pointer items-start gap-2.5 text-sm text-gray-600 select-none">
+                      <input type="checkbox" checked={displayName} onChange={(e) => setDisplayName(e.target.checked)} className="mt-0.5 size-4 rounded border-gray-300 accent-[#E5231E]" />
+                      Display my name on this petition
+                    </label>
+                    {error && <p className="mt-3 text-center text-sm text-red-500">{error}</p>}
+                    <button onClick={handleSubmit} disabled={submitting} className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-[#f8e74a] px-6 py-3.5 text-base font-bold text-gray-900 transition-colors hover:bg-[#e6d640] disabled:opacity-50">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-5"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                      {submitting ? "Отправка..." : "Sign petition"}
+                    </button>
+                    <p className="mt-4 text-center text-[11px] leading-relaxed text-gray-400">
+                      By signing, you accept Change.org&apos;s{" "}
+                      <Link href="https://www.change.org/policies/terms-of-service" className="underline hover:text-gray-600">Terms of Service</Link> and{" "}
+                      <Link href="https://www.change.org/policies/privacy" className="underline hover:text-gray-600">Privacy Policy</Link>.
+                    </p>
+                  </>
+                )}
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-[0_2px_20px_rgba(0,0,0,0.08)] animate-pulse">
+                <div className="mx-auto h-10 w-24 rounded bg-gray-200" />
+                <div className="mx-auto mt-2 h-4 w-32 rounded bg-gray-100" />
+                <hr className="my-5 border-gray-200" />
+                <div className="space-y-3">
+                  <div className="h-10 rounded-lg bg-gray-100" />
+                  <div className="h-10 rounded-lg bg-gray-100" />
+                  <div className="h-10 rounded-lg bg-gray-100" />
+                  <div className="h-10 rounded-lg bg-gray-100" />
+                </div>
+                <div className="mt-5 h-12 rounded-lg bg-gray-200" />
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
-      {/* Content: two columns */}
+      {/* Content: The Issue */}
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
-        <div className="grid gap-10 py-10 lg:grid-cols-[1fr_340px] lg:gap-14">
-
-          {/* Left: The Issue */}
-          <article>
+        <div className="py-10">
+          <article className="max-w-3xl">
             <h2 className="font-serif text-3xl font-bold text-gray-900 sm:text-4xl">
               The Issue
             </h2>
@@ -154,46 +215,6 @@ export default function ChangeOrgPage() {
             </div>
             <hr className="my-8 border-gray-200" />
           </article>
-
-          {/* Right: Sidebar sign form (for scroll target) */}
-          <div id="sign" className="lg:sticky lg:top-20 lg:self-start">
-            <div className="rounded-2xl bg-white p-6 shadow-[0_2px_20px_rgba(0,0,0,0.08)] border border-gray-100">
-              <p className="text-center text-4xl font-bold text-gray-900">1,573</p>
-              <div className="mt-1 flex items-center justify-center gap-1.5">
-                <svg viewBox="0 0 24 24" fill="#1a73e8" className="size-4"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                <span className="text-sm text-gray-600">Verified signatures</span>
-              </div>
-              <hr className="my-5 border-gray-200" />
-              <h3 className="text-lg font-bold text-gray-900">Sign this petition</h3>
-              <div className="mt-4 space-y-3">
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-gray-700">First name</label>
-                  <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#E5231E] focus:ring-1 focus:ring-[#E5231E]/20" />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-gray-700">Last name</label>
-                  <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#E5231E] focus:ring-1 focus:ring-[#E5231E]/20" />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-gray-700">Email</label>
-                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#E5231E] focus:ring-1 focus:ring-[#E5231E]/20" />
-                </div>
-              </div>
-              <label className="mt-4 flex cursor-pointer items-start gap-2.5 text-sm text-gray-600 select-none">
-                <input type="checkbox" checked={displayName} onChange={(e) => setDisplayName(e.target.checked)} className="mt-0.5 size-4 rounded border-gray-300 accent-[#E5231E]" />
-                Display my name on this petition
-              </label>
-              <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-[#f8e74a] px-6 py-3.5 text-base font-bold text-gray-900 transition-colors hover:bg-[#e6d640]">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-5"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
-                Sign petition
-              </button>
-              <p className="mt-4 text-center text-[11px] leading-relaxed text-gray-400">
-                By signing, you accept Change.org&apos;s{" "}
-                <Link href="https://www.change.org/policies/terms-of-service" className="underline hover:text-gray-600">Terms of Service</Link> and{" "}
-                <Link href="https://www.change.org/policies/privacy" className="underline hover:text-gray-600">Privacy Policy</Link>, and agree to receive occasional emails about campaigns on Change.org. You can unsubscribe at any time.
-              </p>
-            </div>
-          </div>
         </div>
       </div>
 
